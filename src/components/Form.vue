@@ -54,6 +54,7 @@
       <button @click="google" class="btn btn-primary-content mt-4">
         <img class="w-8" src="../assets/google.png" alt="Google Logo" />
       </button>
+      
     </form>
   </section>
 </template>
@@ -62,12 +63,16 @@
 import { ref, defineProps } from 'vue'
 import { useRouter } from 'vue-router'
 import { signIn, signUp, googlePopup, auth } from '../helpers/useAuth'
+import { isError, msg } from '../helpers/useError'
 const router = useRouter()
 const login = async () => {
   try {
     await signIn(email.value, password.value)
+    isError.value = false
     router.push('/')
   } catch (error) {
+    isError.value = true
+    msg.value = 'There was an Authentication Error'
     console.log(error)
   }
 }
@@ -76,16 +81,22 @@ const register = async () => {
     await signUp(email.value, password.value)
     const user = auth().currentUser
     await user.updateProfile({ displayName: name.value })
+    isError.value = false
     router.push('/')
   } catch (error) {
+    isError.value = true
+    msg.value = 'There was an Authentication Error'
     console.log(error)
   }
 }
 const google = async () => {
   try {
     await googlePopup()
+    isError.value = false
     router.push('/')
   } catch (error) {
+    isError.value = true
+    msg.value = 'There was an Authentication Error'
     console.log(error)
   }
 }
